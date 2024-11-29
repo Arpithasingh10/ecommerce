@@ -1,0 +1,343 @@
+
+
+
+
+{% block content %}
+<div class="cart-container container">
+    <h1 style="text-align: center;">Shopping Cart</h1>
+    
+    {% if cart_items %}
+    <div class="cart-content">
+        <div class="cart-items">
+            {% for item in cart_items %}
+            <div class="cart-item">
+                <div class="item-image">
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                </div>
+                <div class="item-details">
+                    <h3>{{ item.product.name }}</h3>
+                    <p class="item-price">${{ item.product.price }}</p>
+                    <div class="quantity-controls">
+                        <form method="post" action="{% url 'cart_update' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                            <button type="submit" name="action" value="decrease" class="qty-btn">-</button>
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99" class="qty-input">
+                            <button type="submit" name="action" value="increase" class="qty-btn">+</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="item-total">
+                    <p>${{ item.total_price }}</p>
+                    <form method="post" action="{% url 'cart_remove' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                        <button type="submit" class="remove-btn">Remove</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="cart-summary">
+            <h2>Order Summary</h2>
+            <div class="summary-item">
+                <span>Subtotal</span>
+                <span>${{ cart_total }}</span>
+            </div>
+            <div class="summary-item">
+                <span>Shipping</span>
+                <span>{% if shipping_cost %}${{ shipping_cost }}{% else %}Free{% endif %}</span>
+            </div>
+            {% if discount %}
+            <div class="summary-item discount">
+                <span>Discount</span>
+                <span>-${{ discount }}</span>
+            </div>
+            {% endif %}
+            <div class="summary-total">
+                <span>Total</span>
+                <span>${{ final_total }}</span>
+            </div>
+            
+            <form method="post" action="{% url 'apply_coupon' %}" class="coupon-form">
+                {% csrf_token %}
+                <input type="text" name="coupon_code" placeholder="Enter coupon code">
+                <button type="submit" class="btn-apply">Apply</button>
+            </form>
+            
+            <a href="#" class="btn-checkout">Proceed to Payment</a>
+            <a href="{% url 'product_list' %}" class="btn-continue">Continue Shopping</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-cart">
+        <i class="fas fa-shopping-cart fa-3x"></i>
+        <h2>Your cart is empty</h2>
+        <p>Browse our products and add items to your cart</p>
+        <a href="{% url 'product_list' %}" class="btn-shop">Start Shopping</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    /* General Container Styles */
+    .cart-container {
+        padding: 2rem 1rem;
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+    }
+    
+    /* Grid Layout for Content */
+    .cart-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    /* Cart Item Styling */
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .item-image img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+    
+    .item-details {
+        flex-grow: 1;
+        margin-left: 1rem;
+    }
+    
+    .item-details h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .item-details .item-price {
+        margin-top: 0.5rem;
+        font-size: 1rem;
+        color: #007bff;
+    }
+    
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        margin-top: 0.5rem;
+    }
+    
+    .qty-btn {
+        padding: 0.3rem 0.6rem;
+        border: 1px solid #ddd;
+        background: #fff;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 1rem;
+        color: #333;
+        transition: background-color 0.3s ease;
+    }
+    
+    .qty-btn:hover {
+        background-color: #f0f0f0;
+    }
+    
+    .qty-input {
+        width: 50px;
+        text-align: center;
+        border: 1px solid #ddd;
+        padding: 0.3rem;
+        border-radius: 4px;
+    }
+    
+    /* Item Total and Remove Button */
+    .item-total {
+        text-align: center;
+    }
+    
+    .item-total p {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .remove-btn {
+        margin-top: 0.5rem;
+        padding: 0.4rem 0.8rem;
+        border: 1px solid #ff4d4f;
+        background: #ff4d4f;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.3s ease;
+    }
+    
+    .remove-btn:hover {
+        background-color: #e04344;
+    }
+    
+    /* Cart Summary Section */
+    .cart-summary {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
+        position: sticky;
+        top: 1rem;
+    }
+    
+    .cart-summary h2 {
+        margin-top: 0;
+        font-size: 1.5rem;
+        color: #333;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 0.5rem;
+    }
+    
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+    
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 2px solid #eee;
+        font-size: 1.2rem;
+    }
+    
+    .coupon-form {
+        display: flex;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+    
+    .coupon-form input {
+        flex-grow: 1;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .btn-apply {
+        padding: 0.5rem 1rem;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .btn-apply:hover {
+        background-color: #0056b3;
+    }
+    
+    .btn-checkout {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 0.8rem;
+        background: #007bff;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .btn-checkout:hover {
+        background: #0056b3;
+    }
+    
+    .btn-continue {
+        display: block;
+        text-align: center;
+        padding: 0.8rem;
+        border: 1px solid #007bff;
+        color: #007bff;
+        border-radius: 4px;
+        margin-top: 0.5rem;
+        text-decoration: none;
+        font-size: 1rem;
+    }
+    
+    .btn-continue:hover {
+        background: #f0f8ff;
+    }
+    
+    /* Empty Cart Section */
+    .empty-cart {
+        text-align: center;
+        padding: 3rem;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        max-width: 600px;
+        margin: 2rem auto;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .empty-cart h2 {
+        font-size: 1.5rem;
+        color: #333;
+    }
+    
+    .empty-cart p {
+        font-size: 1rem;
+        color: #666;
+    }
+    
+    .btn-shop {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        background: #ff9900;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 1rem;
+    }
+    
+    .btn-shop:hover {
+        background: red;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .cart-content {
+            grid-template-columns: 1fr;
+        }
+    
+        .item-image img {
+            width: 60px;
+            height: 60px;
+        }
+    
+        .cart-summary {
+            position: static;
+        }
+    }
+    </style>
+    
+{% endblock %}

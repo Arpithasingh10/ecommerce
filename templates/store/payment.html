@@ -1,0 +1,39 @@
+<script src="https://js.stripe.com/v3/"></script>
+<h1>Payment</h1>
+<p>Order Total: ${{ order.total_price }}</p>
+<div id="card-element"></div>
+<button id="submit-button">Pay Now</button>
+
+<script>
+    const stripe = Stripe('{{ stripe_public_key }}');
+    const elements = stripe.elements();
+    const card = elements.create('card');
+    card.mount('#card-element');
+
+    const form = document.getElementById('submit-button');
+    form.addEventListener('click', async () => {
+        const { error, paymentMethod } = await stripe.createPaymentMethod({
+            type: 'card',
+            card: card,
+        });
+
+        if (error) {
+            alert(error.message);
+        } else {
+            // Submit payment method ID to the server
+            const response = await fetch("", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({ payment_method_id: paymentMethod.id }),
+            });
+            if (response.ok) {
+                window.location.href = "{{ order_success_url }}";
+            } else {
+                alert("Payment failed");
+            }
+        }
+    });
+</script>

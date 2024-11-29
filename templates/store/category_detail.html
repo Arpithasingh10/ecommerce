@@ -1,0 +1,27 @@
+<!-- store/templates/store/category_detail.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h1{
+            text-decoration:solid grey underline;
+
+        }
+        img{
+            border: 1px grey ;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ category.name }}</h1>
+<p>{{ category.description }}</p>
+{% if category.image %}
+    <img src="{{ category.image.url }}" alt="{{ category.name }}" width="500px" height="500px">
+{% endif %}
+</body>
+</html>
+

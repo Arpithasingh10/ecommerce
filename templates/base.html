@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-commerce Store{% endblock %}</title>
+    
+    <!-- Load static files tag -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'C:\Users\Arpitha\ecommerce\static\js\main.js' %}" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+       
+#login-button{
+    display: inline-block;
+    position: absolute;
+    top: 15px; /* Adjust for vertical positioning */
+    right: 20px; /* Adjust for horizontal positioning */
+    background-color: #ff9900; /* Orange background */
+    color: white; /* White text */
+    padding: 10px 20px; /* Button padding */
+    border-radius: 25px; /* Rounded corners */
+    text-decoration: none; /* Removes underline from the text */
+    font-weight: bold; /* Makes the text bold */
+    font-size: 16px; /* Font size */
+    border: none; /* Removes border */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease;
+}
+#signin {
+    display: inline-block;
+    position: absolute;
+    top: 15px; /* Same vertical positioning as login button */
+    right: 110px; /* Position to the left of login button */
+    background-color: #ff9900; /* Green background (or any color you prefer) */
+    color: white; /* White text */
+    padding: 10px 20px; /* Button padding */
+    border-radius: 25px; /* Rounded corners */
+    text-decoration: none; /* Removes underline from the text */
+    font-weight: bold; /* Makes the text bold */
+    font-size: 16px; /* Font size */
+    border: none; /* Removes border */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease;
+}
+
+#signin:hover,#login-button:hover {
+    background-color: red; /* Darker green on hover */
+}
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="navbar">
+            <a href="{% url 'sign_up' %}"  class="sign-up" id="signin">sign up</a>
+        </div>
+        <div class="navbar">
+            <a href="{% url 'login' %}"  class="btn-login" id="login-button">Login</a>
+        </div>
+        <nav class="navbar">
+            <div class="container">
+                <a href="{% url 'product_list' %}" class="logo">MyStore</a>
+
+                <div class="search">
+                    <form method="get" action="{% url 'product_list' %}">
+                        <input type="text" name="q" placeholder="Search products...">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+            </div>
+                
+                <div class="nav-links">
+                    <br>
+                    <a href="{% url 'cart' %}" class="cart-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        {% with total_items=cart|length %}
+                            {% if total_items > 0 %}
+                                <span class="cart-count">{{ total_items }}</span>
+                            {% endif %}
+                        {% endwith %}
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- Main Content -->
+    <main class="main-content container">
+        
+        <section class="hero">
+            <br>
+            <h1>Discover Amazing Products</h1>
+            <p>Find the best deals on top quality products today!</p>
+        </section>
+
+        <section class="categories">
+            <h2>Shop By Categories</h2>
+            <div class="category-list">
+                {% for category in categories %}
+                    <div class="category-item">
+                        <img src="{{ category.image.url }}" alt="{{ category.name }}" class="category-image">
+                        <h3>{{ category.name }}</h3>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="featured-products">
+            <h2>Featured Products</h2>
+            <div class="product-grid">
+                {% for product in products %}
+                    <div class="product-card">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        <h3>{{ product.name }}</h3>
+                        <p class="price">${{ product.price }}</p>
+                        <a href="{{ product.get_absolute_url }}" class="btn">View Product</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="testimonials">
+            <h2>What Our Customers Say</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p>"Great products! Fast shipping!"</p>
+                    <h4>- Customer 1</h4>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Fantastic experience shopping here!"</p>
+                    <h4>- Customer 2</h4>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Us</h3>
+                    <p>Your one-stop shop for amazing products.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>Email: support@mystore.com</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyStore. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

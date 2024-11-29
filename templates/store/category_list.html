@@ -1,0 +1,32 @@
+<!-- store/templates/store/category_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"> <!-- Link to any CSS you might have -->
+</head>
+<body>
+
+<h1>Categories</h1>
+
+<div class="category-list">
+    {% for category in categories %}
+        <div class="category-item">
+            {% if category.image %}
+                <img src="{{ category.image.url|add:'/' }}" alt="{{ category.name }}" class="category-image">
+            {% else %}
+                <img src="{% static 'images/default-category.png' %}" alt="No image available" class="category-image">
+            {% endif %}
+            <h2>{{ category.name }}</h2>
+            <p>{{ category.description }}</p>
+            <a href="{% url 'store:category_detail' category.slug %}">View Products</a>
+        </div>
+    {% empty %}
+        <p>No categories available.</p>
+    {% endfor %}
+</div>
+
+</body>
+</html>

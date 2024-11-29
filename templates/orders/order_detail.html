@@ -1,0 +1,97 @@
+
+
+{% block title %}Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="order-detail-container container">
+    <div class="order-header">
+        <h1>Order #{{ order.id }}</h1>
+        <span class="order-status {{ order.status|lower }}">{{ order.get_status_display }}</span>
+    </div>
+
+    <!-- Order Information -->
+    <div class="order-info">
+        <div>
+            <h3>Order Details</h3>
+            <p><strong>Order Date:</strong> {{ order.created_at|date:"F j, Y" }}</p>
+            <p><strong>Status:</strong> {{ order.get_status_display }}</p>
+            <p><strong>Payment:</strong> {{ order.payment_method }} ({{ order.payment_status }})</p>
+        </div>
+
+        <div>
+            <h3>Shipping Address</h3>
+            <p>{{ order.shipping_address.name }}</p>
+            <p>{{ order.shipping_address.street_address }}</p>
+            <p>{{ order.shipping_address.city }}, {{ order.shipping_address.state }} {{ order.shipping_address.zip_code }}</p>
+            <p>{{ order.shipping_address.country }}</p>
+        </div>
+
+        <div>
+            <h3>Billing Address</h3>
+            <p>{{ order.billing_address.name }}</p>
+            <p>{{ order.billing_address.street_address }}</p>
+            <p>{{ order.billing_address.city }}, {{ order.billing_address.state }} {{ order.billing_address.zip_code }}</p>
+            <p>{{ order.billing_address.country }}</p>
+        </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="order-items">
+        <h3>Order Items</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                    <td>
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-img">
+                        <span>{{ item.product.name }}</span>
+                    </td>
+                    <td>${{ item.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ item.get_total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+        <h3>Summary</h3>
+        <p><strong>Subtotal:</strong> ${{ order.get_subtotal }}</p>
+        <p><strong>Shipping:</strong> ${{ order.shipping_cost }}</p>
+        {% if order.discount %}
+        <p><strong>Discount:</strong> -${{ order.discount }}</p>
+        {% endif %}
+        <p><strong>Tax:</strong> ${{ order.tax }}</p>
+        <p class="total"><strong>Total:</strong> ${{ order.get_total }}</p>
+    </div>
+
+    <!-- Order Actions -->
+    {% if order.status == 'pending' %}
+    <div class="order-actions">
+        <a href="{% url 'payment' order.id %}" class="btn btn-primary">Pay Now</a>
+        <a href="{% url 'order_cancel' order.id %}" class="btn btn-danger">Cancel Order</a>
+    </div>
+    {% endif %}
+
+    <!-- Tracking Information -->
+    {% if order.tracking_number %}
+    <div class="tracking-info">
+        <h3>Tracking</h3>
+        <p><strong>Tracking Number:</strong> {{ order.tracking_number }}</p>
+        <p><strong>Carrier:</strong> {{ order.shipping_carrier }}</p>
+        <a href="{{ order.tracking_url }}" target="_blank" class="btn btn-secondary">Track Package</a>
+    </div>
+    {% endif %}
+</div>
+
+

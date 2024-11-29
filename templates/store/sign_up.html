@@ -1,0 +1,145 @@
+
+
+
+
+{% block content %}
+    <div class="sign-up-container">
+        <h1>Sign Up</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password1">Password</label>
+                <input type="password" id="password1" name="password1" required>
+            </div>
+            <div class="form-group">
+                <label for="password2">Confirm Password</label>
+                <input type="password" id="password2" name="password2" required>
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+    </div>
+{% endblock %}
+{% block extra_styles %}
+<style>
+    /* Base Styling for Consistency */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Container for Sign-Up Form */
+    .sign-up-container {
+        max-width: 500px;
+        margin: 50px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .sign-up-container h1 {
+        font-size: 2.5rem;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    /* Form Styling */
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .form-group label {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+        color: #555;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+        border-color: #ff9900;
+    }
+
+    /* Submit Button */
+    .submit-button {
+        background-color: #ff9900;
+        color: white;
+        font-size: 1.2rem;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 100%;
+    }
+
+    .submit-button:hover {
+        background-color: #e68900;
+    }
+
+    /* Login Link */
+    .sign-up-container p {
+        margin-top: 20px;
+        font-size: 1rem;
+        color: #666;
+    }
+
+    .sign-up-container p a {
+        color: #ff9900;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .sign-up-container p a:hover {
+        text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .sign-up-container {
+            padding: 20px;
+        }
+
+        .sign-up-container h1 {
+            font-size: 2rem;
+        }
+
+        .form-group label {
+            font-size: 1rem;
+        }
+
+        .submit-button {
+            font-size: 1rem;
+            padding: 10px 15px;
+        }
+    }
+</style>
+{% endblock %}
